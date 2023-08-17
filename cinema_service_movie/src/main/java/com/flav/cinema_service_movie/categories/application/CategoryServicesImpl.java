@@ -6,7 +6,7 @@ import com.flav.cinema_service_movie.categories.domain.dtos.request.CategoryRequ
 import com.flav.cinema_service_movie.categories.domain.entity.Category;
 import com.flav.cinema_service_movie.categories.domain.exceptions.CategoryNotFound;
 import com.flav.cinema_service_movie.categories.domain.exceptions.CategoryResourceExists;
-import com.flav.cinema_service_movie.categories.domain.mappers.CategoryMapper;
+import com.flav.cinema_service_movie.categories.domain.mappers.ICategoryMapper;
 import com.flav.cinema_service_movie.categories.domain.repository.ICategoryRepository;
 import com.flav.cinema_service_movie.categories.domain.services.ICategoryServices;
 import org.springframework.http.HttpStatus;
@@ -14,15 +14,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CategoryServicesImpl implements ICategoryServices {
 
     private final ICategoryRepository repository;
-    private final CategoryMapper mapper;
+    private final ICategoryMapper mapper;
 
-    public CategoryServicesImpl(ICategoryRepository repository, CategoryMapper mapper) {
+    public CategoryServicesImpl(ICategoryRepository repository, ICategoryMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
@@ -36,7 +35,7 @@ public class CategoryServicesImpl implements ICategoryServices {
     }
 
     @Override
-    public CategoryResponseDTO findOne(UUID id) {
+    public CategoryResponseDTO findOne(Long id) {
         Optional<Category> categoryDB = repository.findOne(id);
 
         if (categoryDB.isEmpty()) {
