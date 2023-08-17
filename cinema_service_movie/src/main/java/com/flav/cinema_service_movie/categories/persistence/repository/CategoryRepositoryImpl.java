@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public class CategoryRepositoryImpl implements ICategoryRepository {
@@ -23,7 +22,7 @@ public class CategoryRepositoryImpl implements ICategoryRepository {
     }
 
     @Override
-    public Optional<Category> findOne(UUID id) {
+    public Optional<Category> findOne(Long id) {
         return repositoryJpa.findById(id);
     }
 
