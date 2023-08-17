@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/")
@@ -26,7 +25,7 @@ public class CategoryControllers {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponseDTO> getOne(@PathVariable("id") UUID id) {
+    public ResponseEntity<CategoryResponseDTO> getOne(@PathVariable("id") Long id) {
         return ResponseEntity.status(200).body(services.findOne(id));
     }
 

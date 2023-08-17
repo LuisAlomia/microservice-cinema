@@ -7,7 +7,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
-import java.util.UUID;
 
 @SpringBootApplication
 public class CinemaServiceMovieApplication implements CommandLineRunner {
@@ -20,11 +19,13 @@ public class CinemaServiceMovieApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Category category1 = Category.builder().id(UUID.randomUUID()).name("terror").build();
-		Category category2 = Category.builder().id(UUID.randomUUID()).name("miedo").build();
-		Category category3 = Category.builder().id(UUID.randomUUID()).name("accion").build();
+		if (repositoryJpa.findAll().isEmpty()) {
+			Category category1 = Category.builder().name("terror").build();
+			Category category2 = Category.builder().name("anime").build();
+			Category category3 = Category.builder().name("comics").build();
 
-		repositoryJpa.saveAll(List.of(category1, category2, category3));
+			repositoryJpa.saveAll(List.of(category1, category2, category3));
+		}
 	}
 
 	public static void main(String[] args) {
