@@ -1,8 +1,10 @@
-package com.flav.cinema_service_movie.categories.presentation.advanc_exceptions_controller;
+package com.flav.cinema_service_movie.commons.presentation.controllers;
 
-import com.flav.cinema_service_movie.categories.domain.dtos.reponse.ErrorFieldsDTO;
 import com.flav.cinema_service_movie.categories.domain.exceptions.CategoryNotFound;
 import com.flav.cinema_service_movie.categories.domain.exceptions.CategoryResourceExists;
+import com.flav.cinema_service_movie.commons.domain.dtos.ErrorFieldsDTO;
+import com.flav.cinema_service_movie.movies.domain.exceptions.MovieNotFound;
+import com.flav.cinema_service_movie.movies.domain.exceptions.MovieResourceExists;
 import jakarta.validation.ConstraintViolation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,16 @@ public class HandlerExceptions {
         return ResponseEntity.status(emptyInputException.getStatus()).body(emptyInputException.getMessage());
     }
 
+    @ExceptionHandler(MovieNotFound.class)
+    public ResponseEntity<String> handleEmptyInput(MovieNotFound emptyInputException){
+        return new ResponseEntity<>(emptyInputException.getMessage(), emptyInputException.getStatus());
+    }
+
+    @ExceptionHandler(MovieResourceExists.class)
+    public ResponseEntity<String> handleEmptyInput(MovieResourceExists emptyInputException){
+        return new ResponseEntity<>(emptyInputException.getMessage(), emptyInputException.getStatus());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorFieldsDTO> handleException(MethodArgumentNotValidException ex) {
         ErrorFieldsDTO dto = ErrorFieldsDTO.builder()
@@ -40,7 +52,6 @@ public class HandlerExceptions {
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
-
     }
 
 }

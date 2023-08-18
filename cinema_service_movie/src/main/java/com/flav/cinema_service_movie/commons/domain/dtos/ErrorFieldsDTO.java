@@ -1,6 +1,8 @@
-package com.flav.cinema_service_movie.categories.domain.dtos.reponse;
+package com.flav.cinema_service_movie.commons.domain.dtos;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
