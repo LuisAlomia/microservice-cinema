@@ -10,6 +10,5 @@ public interface ITicketRepository {
     public Ticket addStock(Ticket ticket);
     public Optional<Ticket> inStock(int idMovie);
     public List<Ticket> showStock();
-    public Ticket takeOutStock(int idMovie);
 
 }

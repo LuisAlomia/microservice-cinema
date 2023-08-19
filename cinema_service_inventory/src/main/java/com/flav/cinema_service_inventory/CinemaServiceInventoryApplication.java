@@ -21,7 +21,7 @@ public class CinemaServiceInventoryApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		Ticket ticket1 = Ticket.builder().idMovie(1).numberOfTickets(10).build();
 		Ticket ticket2 = Ticket.builder().idMovie(2).numberOfTickets(15).build();
-		Ticket ticket3 = Ticket.builder().idMovie(4).numberOfTickets(5).build();
+		Ticket ticket3 = Ticket.builder().idMovie(4).numberOfTickets(0).build();
 
 		repositoryJpa.saveAll(List.of(ticket1, ticket2, ticket3));
 	}

@@ -25,8 +25,8 @@ public class TicketControllers {
         return ResponseEntity.status(HttpStatus.OK).body(service.showStock());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TicketResponseDTO> inStock(@PathVariable("id") int idMovie) {
+    @GetMapping("/{idMovie}")
+    public ResponseEntity<TicketResponseDTO> inStock(@PathVariable("idMovie") int idMovie) {
         return ResponseEntity.status(HttpStatus.OK).body(service.inStock(idMovie));
     }
 
@@ -36,7 +36,7 @@ public class TicketControllers {
     }
 
     @GetMapping("/take-out-stock/{idMovie}")
-    public ResponseEntity<TicketResponseDTO> takeOutStock(@PathVariable int idMovie) {
+    public ResponseEntity<TicketResponseDTO> takeOutStock(@PathVariable("idMovie") int idMovie) {
         return ResponseEntity.status(HttpStatus.OK).body(service.takeOutStock(idMovie));
     }
 
