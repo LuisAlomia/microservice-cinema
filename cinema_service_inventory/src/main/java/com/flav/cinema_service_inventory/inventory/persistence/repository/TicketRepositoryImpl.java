@@ -31,8 +31,4 @@ public class TicketRepositoryImpl implements ITicketRepository {
         return repositoryJpa.findAll();
     }
 
-    @Override
-    public Ticket takeOutStock(int idMovie) {
-        return null;
-    }
 }
