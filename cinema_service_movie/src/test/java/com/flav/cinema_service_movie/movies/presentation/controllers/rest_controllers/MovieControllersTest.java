@@ -3,20 +3,25 @@ package com.flav.cinema_service_movie.movies.presentation.controllers.rest_contr
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flav.cinema_service_movie.categories.domain.constants.CategoryConstants;
 import com.flav.cinema_service_movie.categories.domain.exceptions.CategoryNotFound;
-import com.flav.cinema_service_movie.commons.domain.dtos.ErrorFieldsDTO;
+import com.flav.cinema_service_movie.client.dtos.TicketResponseDTO;
 import com.flav.cinema_service_movie.movies.domain.constants.MovieConstants;
 import com.flav.cinema_service_movie.movies.domain.dtos.request.MovieRequestDTO;
 import com.flav.cinema_service_movie.movies.domain.exceptions.MovieNotFound;
 import com.flav.cinema_service_movie.movies.domain.exceptions.MovieResourceExists;
+import com.flav.cinema_service_movie.movies.domain.services.IInventoryClient;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +41,11 @@ class MovieControllersTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private IInventoryClient mockInventoryClient;
+
     ObjectMapper objectMapper = new ObjectMapper();
+
 
     @Order(1)
     @DisplayName("Should return a list of movies")
@@ -86,7 +95,8 @@ class MovieControllersTest {
     @Test
     void create() throws Exception {
         MovieRequestDTO request = MovieRequestDTO.builder().title("jack 2").description("movie jack 2")
-                .image("http//image.movie").video("http//video.movie").category(3L).build();
+                .image("http//image.movie").video("http//video.movie").releaseDate(new Date()).price(5.0)
+                .category(3L).numberOfTickets(10).build();
 
         String response = mockMvc
                 .perform(post("/movies")
@@ -105,7 +115,8 @@ class MovieControllersTest {
     @Test
     void movieResourceExists() throws Exception {
         MovieRequestDTO request = MovieRequestDTO.builder().title("one piece").description("movie one piece")
-                .image("http//image.movie").video("http//video.movie").category(3L).build();
+                .image("http//image.movie").video("http//video.movie").releaseDate(new Date()).price(10)
+                .category(3L).numberOfTickets(10).build();
 
         mockMvc.perform(post("/movies")
                         .content(objectMapper.writeValueAsString(request))
@@ -121,8 +132,9 @@ class MovieControllersTest {
     @DisplayName("Should throw new exception CategoryNotFound")
     @Test
     void categoryNotFound() throws Exception {
-        MovieRequestDTO request = MovieRequestDTO.builder().title("one piece").description("movie one piece")
-                .image("http//image.movie").video("http//video.movie").category(10L).build();
+        MovieRequestDTO request = MovieRequestDTO.builder().title("Example").description("movie Example")
+                .image("http//image.movie").video("http//video.movie").releaseDate(new Date())
+                .price(8.0).category(100L).numberOfTickets(10).build();
 
         mockMvc.perform(post("/movies")
                         .content(objectMapper.writeValueAsString(request))
@@ -163,7 +175,28 @@ class MovieControllersTest {
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
                 .andExpect(jsonPath("$.error").value("Validation error"))
                 .andExpect(jsonPath("$.detailedMessages").isArray())
-                .andExpect(jsonPath("$.detailedMessages", Matchers.hasSize(9)));
+                .andExpect(jsonPath("$.detailedMessages", Matchers.hasSize(12)));
 
+    }
+
+    @DisplayName("Should return a list of movie for id")
+    @Test
+    void findAllById() throws Exception {
+        List<Long> request = List.of(1L, 2L, 3L);
+
+        BDDMockito.given(mockInventoryClient.inStock(1L))
+                .willReturn(TicketResponseDTO.builder().id(1L).idMovie(1).numberOfTickets(10).build());
+
+        String response = mockMvc
+                .perform(post("/movies/list")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", Matchers.hasSize(3)))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
     }
 }

@@ -32,6 +32,9 @@ public class MovieRepositoryImpl implements IMovieRepository {
     }
 
     @Override
+    public List<Movie> findAllById(List<Long> idCategory) { return repositoryJpa.findAllById(idCategory); }
+
+    @Override
     public Movie create(Movie category) {
         return repositoryJpa.save(category);
     }

@@ -10,6 +10,7 @@ public interface IMovieRepository {
     public List<Movie> findAll();
     public Optional<Movie> findOne(Long id);
     public List<Movie> findCategory(Long idCategory);
+    public List<Movie> findAllById(List<Long> idMovies);
     public Movie create(Movie category);
     public Optional<Movie> findByTitle(String title);
 

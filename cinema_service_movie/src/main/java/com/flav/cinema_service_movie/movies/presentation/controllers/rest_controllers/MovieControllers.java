@@ -7,6 +7,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Time;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -37,6 +41,11 @@ public class MovieControllers {
     @PostMapping
     public ResponseEntity<MovieResponseDTO> create(@Valid @RequestBody MovieRequestDTO movie) {
         return ResponseEntity.status(201).body(services.create(movie));
+    }
+
+    @PostMapping("/list")
+    public ResponseEntity<List<MovieResponseDTO>> findAllById(@RequestBody List<Long> idMovies) {
+        return ResponseEntity.status(200).body(services.findAllById(idMovies));
     }
 
 }

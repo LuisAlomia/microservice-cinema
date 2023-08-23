@@ -83,7 +83,7 @@ class TicketServicesImplTest {
     @Test
     void NotTicketAvailable() {
         //Given
-        Ticket ticket = Ticket.builder().id(1L).idMovie(1).numberOfTickets(0).build();
+        Ticket ticket = Ticket.builder().id(1L).idMovie(1).numberOfTickets(-1).build();
 
         BDDMockito.given(mockRepoTicket.inStock(1)).willReturn(Optional.of(ticket));
 
