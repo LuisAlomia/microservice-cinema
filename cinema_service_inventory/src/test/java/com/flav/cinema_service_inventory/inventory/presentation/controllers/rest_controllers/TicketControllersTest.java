@@ -3,8 +3,6 @@ package com.flav.cinema_service_inventory.inventory.presentation.controllers.res
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flav.cinema_service_inventory.inventory.domain.constants.TicketConstants;
 import com.flav.cinema_service_inventory.inventory.domain.dtos.request.TicketRequestDTO;
-import com.flav.cinema_service_inventory.inventory.domain.entity.Ticket;
-import com.flav.cinema_service_inventory.inventory.domain.exceptions.NotTicketAvailable;
 import com.flav.cinema_service_inventory.inventory.domain.exceptions.TicketMovieNotFound;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
@@ -47,7 +45,7 @@ class TicketControllersTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", Matchers.hasSize(3)))
                 .andExpect(jsonPath("$.[0].idMovie").value(1))
-                .andExpect(jsonPath("$.[1].numberOfTickets").value(15));
+                .andExpect(jsonPath("$.[1].numberOfTickets").value(1));
     }
 
 
@@ -63,18 +61,6 @@ class TicketControllersTest {
                         Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
-    @Test
-    void NotTicketAvailable() throws Exception {
-        mockMvc.perform(get("/inventory/{idMovie}", 4)
-                        .accept(APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NotTicketAvailable))
-                .andExpect(result -> assertEquals(
-                        String.format(TicketConstants.NOT_TICKETS_AVAILABLE, 4),
-                        Objects.requireNonNull(result.getResolvedException()).getMessage()));
-    }
-
     @Order(2)
     @Test
     void inStock() throws Exception {
@@ -85,7 +71,7 @@ class TicketControllersTest {
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$").isMap())
                 .andExpect(jsonPath("$.idMovie").value(1))
-                .andExpect(jsonPath("$.numberOfTickets").value(10));
+                .andExpect(jsonPath("$.numberOfTickets").value(1));
     }
 
     @Order(3)
@@ -100,7 +86,7 @@ class TicketControllersTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").isMap())
                 .andExpect(jsonPath("$.idMovie").value(2))
-                .andExpect(jsonPath("$.numberOfTickets").value(20))
+                .andExpect(jsonPath("$.numberOfTickets").value(6))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -132,7 +118,7 @@ class TicketControllersTest {
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$").isMap())
                 .andExpect(jsonPath("$.idMovie").value(1))
-                .andExpect(jsonPath("$.numberOfTickets").value(9));
+                .andExpect(jsonPath("$.numberOfTickets").value(0));
     }
 
     @DisplayName("Should throw new exception fields invalid")

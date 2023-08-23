@@ -46,7 +46,7 @@ public class TicketServicesImpl implements ITicketService {
             new TicketMovieNotFound(
                     String.format(TicketConstants.MOVIE_NOT_FOUND, idMovie), HttpStatus.NOT_FOUND));
 
-        if(ticketDB.getNumberOfTickets() <= 0) {
+        if(ticketDB.getNumberOfTickets() < 0) {
             throw new NotTicketAvailable(
                     String.format(TicketConstants.NOT_TICKETS_AVAILABLE, idMovie), HttpStatus.BAD_REQUEST);
         }

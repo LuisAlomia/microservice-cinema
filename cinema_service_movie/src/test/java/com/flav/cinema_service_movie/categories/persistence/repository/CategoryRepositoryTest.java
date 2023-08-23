@@ -6,13 +6,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
+@SpringBootTest
+@TestPropertySource(locations = "classpath:/config-test.properties")
 class CategoryRepositoryTest {
 
     @Autowired
@@ -32,7 +35,7 @@ class CategoryRepositoryTest {
         List<Category> result = repositoryJpa.findAll();
 
         //Then
-        assertEquals(3, result.size());
+        assertEquals(4, result.size());
         assertTrue(result.get(1).getName().contains("anime"));
     }
 
@@ -40,15 +43,13 @@ class CategoryRepositoryTest {
     @Test
     void findOne() {
         //Given
-        Category category = Category.builder().name("test").build();
-        Category newCategory = repositoryJpa.save(category);
 
         //When
-        Optional<Category> result = repositoryJpa.findById(newCategory.getId());
+        Optional<Category> result = repositoryJpa.findById(1L);
 
         //Then
         assertTrue(result.isPresent());
-        assertEquals("test", result.get().getName());
+        assertEquals("terror", result.get().getName());
     }
 
     @DisplayName("Should create a new category in database")

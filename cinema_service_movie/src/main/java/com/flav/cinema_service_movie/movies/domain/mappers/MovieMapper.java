@@ -16,7 +16,10 @@ public class MovieMapper implements IMovieMapper{
                 .description(movie.getDescription())
                 .image(movie.getImage())
                 .video(movie.getVideo())
+                .releaseDate(movie.getReleaseDate())
+                .price(movie.getPrice())
                 .category(movie.getCategory())
+                .tickets(movie.getTickets())
                 .build();
     }
 }

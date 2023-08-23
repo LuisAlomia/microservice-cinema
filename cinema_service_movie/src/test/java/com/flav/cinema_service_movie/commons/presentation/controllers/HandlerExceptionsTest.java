@@ -34,6 +34,6 @@ class HandlerExceptionsTest {
 
         //Then
         assertFalse(violation.isEmpty());
-        assertEquals(9, violation.size());
+        assertEquals(12, violation.size());
     }
 }

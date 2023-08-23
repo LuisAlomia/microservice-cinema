@@ -3,6 +3,7 @@ package com.flav.cinema_service_movie.commons.presentation.controllers;
 import com.flav.cinema_service_movie.categories.domain.exceptions.CategoryNotFound;
 import com.flav.cinema_service_movie.categories.domain.exceptions.CategoryResourceExists;
 import com.flav.cinema_service_movie.commons.domain.dtos.ErrorFieldsDTO;
+import com.flav.cinema_service_movie.movies.domain.exceptions.ClientError;
 import com.flav.cinema_service_movie.movies.domain.exceptions.MovieNotFound;
 import com.flav.cinema_service_movie.movies.domain.exceptions.MovieResourceExists;
 import jakarta.validation.ConstraintViolation;
@@ -32,6 +33,11 @@ public class HandlerExceptions {
 
     @ExceptionHandler(MovieResourceExists.class)
     public ResponseEntity<String> handleEmptyInput(MovieResourceExists emptyInputException){
+        return new ResponseEntity<>(emptyInputException.getMessage(), emptyInputException.getStatus());
+    }
+
+    @ExceptionHandler(ClientError.class)
+    public ResponseEntity<String> handleEmptyInput(ClientError emptyInputException){
         return new ResponseEntity<>(emptyInputException.getMessage(), emptyInputException.getStatus());
     }
 

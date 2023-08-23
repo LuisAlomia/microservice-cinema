@@ -4,6 +4,7 @@ import com.flav.cinema_service_movie.categories.domain.constants.CategoryConstan
 import com.flav.cinema_service_movie.categories.domain.entity.Category;
 import com.flav.cinema_service_movie.categories.domain.exceptions.CategoryNotFound;
 import com.flav.cinema_service_movie.categories.domain.repository.ICategoryRepository;
+import com.flav.cinema_service_movie.client.dtos.TicketResponseDTO;
 import com.flav.cinema_service_movie.movies.domain.constants.MovieConstants;
 import com.flav.cinema_service_movie.movies.domain.dtos.reponse.MovieResponseDTO;
 import com.flav.cinema_service_movie.movies.domain.dtos.request.MovieRequestDTO;
@@ -12,7 +13,7 @@ import com.flav.cinema_service_movie.movies.domain.exceptions.MovieNotFound;
 import com.flav.cinema_service_movie.movies.domain.exceptions.MovieResourceExists;
 import com.flav.cinema_service_movie.movies.domain.mappers.IMovieMapper;
 import com.flav.cinema_service_movie.movies.domain.repository.IMovieRepository;
-import com.flav.cinema_service_movie.movies.domain.services.IMovieServices;
+import com.flav.cinema_service_movie.movies.domain.services.IInventoryClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +39,9 @@ class MovieServicesImplTest {
     @Mock
     private IMovieMapper mapper;
 
+    @Mock
+    private IInventoryClient mockInventoryClient;
+
     @InjectMocks
     private MovieServicesImpl services;
 
@@ -55,6 +59,15 @@ class MovieServicesImplTest {
         var list = List.of(movie1, movie2, movie3);
 
         BDDMockito.given(mockRepoMovie.findAll()).willReturn(list);
+
+        for(Movie item: list) {
+            BDDMockito.given(mockInventoryClient.inStock(item.getId())).willReturn(TicketResponseDTO
+                    .builder()
+                    .id(item.getId())
+                    .idMovie(Math.toIntExact(item.getId()))
+                    .numberOfTickets(10)
+                    .build());
+        }
 
         for(Movie item: list) {
             BDDMockito.given(mapper.toResponseDTO(item))
@@ -77,6 +90,13 @@ class MovieServicesImplTest {
     void findOne() {
         //Given
         BDDMockito.given(mockRepoMovie.findOne(1L)).willReturn(Optional.of(movie1));
+
+        BDDMockito.given(mockInventoryClient.inStock(1L)).willReturn(TicketResponseDTO
+                .builder()
+                .id(1L)
+                .idMovie(Math.toIntExact(movie1.getId()))
+                .numberOfTickets(10)
+                .build());
 
         BDDMockito.given(mapper.toResponseDTO(movie1))
                     .willReturn(MovieResponseDTO.builder().id(movie1.getId()).title(movie1.getTitle())
@@ -116,6 +136,15 @@ class MovieServicesImplTest {
         BDDMockito.given(mockRepoMovie.findCategory(2L)).willReturn(list);
 
         for(Movie item: list) {
+            BDDMockito.given(mockInventoryClient.inStock(item.getId())).willReturn(TicketResponseDTO
+                    .builder()
+                    .id(item.getId())
+                    .idMovie(Math.toIntExact(item.getId()))
+                    .numberOfTickets(10)
+                    .build());
+        }
+
+        for(Movie item: list) {
             BDDMockito.given(mapper.toResponseDTO(item))
                     .willReturn(MovieResponseDTO.builder().id(item.getId()).title(item.getTitle())
                             .description(item.getDescription()).image(item.getImage()).video(item.getVideo())
@@ -151,8 +180,6 @@ class MovieServicesImplTest {
     @Test
     void title_movie_exits() {
         //Given
-        BDDMockito.given(mockRepoCategory.findOne(2L)).willReturn(Optional.of(category2));
-
         BDDMockito.given(mockRepoMovie.findByTitle(movie1.getTitle())).willReturn(Optional.of(movie1));
 
         //When
