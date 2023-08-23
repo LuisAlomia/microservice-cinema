@@ -26,6 +26,7 @@
 		<module>cinema_service_inventory</module>
 		<module>cinema_service_invoice</module>
 		<module>cinema_service_shopping_cart</module>
+		<module>discovery_service</module>
 	</modules>
 
 	<dependencies>
@@ -66,6 +67,12 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 			<version>4.0.4</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<version>4.0.0</version>
+		</dependency>
+
 
 		<!-- Test dependency with Junit -->
 		<dependency>
