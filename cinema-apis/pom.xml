@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -26,7 +27,6 @@
 		<module>cinema_service_inventory</module>
 		<module>cinema_service_invoice</module>
 		<module>cinema_service_shopping_cart</module>
-		<module>discovery_service</module>
 	</modules>
 
 	<dependencies>
