@@ -5,13 +5,13 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(value = "cinema-service-inventory", url = "http://localhost:9001/inventory")
+@FeignClient(value = "cinema-service-inventory")
 public interface IInventoryClientFeign {
 
-    @GetMapping("/{idMovie}")
+    @GetMapping("/cinema/api/v1/inventory/{idMovie}")
     public TicketResponseDTO inStock(@PathVariable("idMovie") int idMovie);
 
-    @GetMapping("/take-out-stock/{idMovie}")
+    @GetMapping("/cinema/api/v1/inventory/take-out-stock/{idMovie}")
     public TicketResponseDTO takeOutStock(@PathVariable("idMovie") int idMovie);
 
 }

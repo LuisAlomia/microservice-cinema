@@ -14,7 +14,7 @@ import java.util.Calendar;
 import java.util.List;
 
 @RestController
-@RequestMapping("/movies")
+@RequestMapping("cinema/api/v1/movies")
 public class MovieControllers {
 
     private final IMovieServices services;
