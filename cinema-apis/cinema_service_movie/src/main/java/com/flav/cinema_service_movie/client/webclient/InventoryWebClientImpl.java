@@ -23,7 +23,7 @@ public class InventoryWebClientImpl implements IInventoryClient {
     public TicketResponseDTO addTicket(TicketRequestDTO ticket) {
         return webClientBuilder.build()
                         .post()
-                        .uri("http://localhost:9001/inventory")
+                        .uri("lb://cinema-service-inventory/cinema/api/v1/inventory")
                         .bodyValue(ticket)
                         .retrieve()
                         .onStatus(HttpStatusCode::isError, clientResponse ->
@@ -37,7 +37,7 @@ public class InventoryWebClientImpl implements IInventoryClient {
     public TicketResponseDTO inStock(Long idMovie) {
         return webClientBuilder.build()
                         .get()
-                        .uri(String.format("http://localhost:9001/inventory/%s", idMovie))
+                        .uri(String.format("lb://cinema-service-inventory/cinema/api/v1/inventory/%s", idMovie))
                         .retrieve()
                         .onStatus(HttpStatusCode::isError, clientResponse ->
                                 Mono.error(new ClientError("Client Internal server error",

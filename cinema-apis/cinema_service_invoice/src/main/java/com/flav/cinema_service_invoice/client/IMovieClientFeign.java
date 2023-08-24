@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(value = "cinema-service-movie", url = "http://localhost:9000/movies")
+@FeignClient(value = "cinema-service-movie")
 public interface IMovieClientFeign {
 
-    @GetMapping("/{id}")
+    @GetMapping("/cinema/api/v1/movies/{id}")
     public ResponseEntity<MovieResponseDTO> getOneMovie(@PathVariable("id") Long id);
 
-    @PostMapping("/list")
+    @PostMapping("/cinema/api/v1/movies/list")
     public ResponseEntity<List<MovieResponseDTO>> getAllMovieById(@RequestBody List<Long> idMovies);
 
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/inventory")
+@RequestMapping("/cinema/api/v1/inventory")
 public class TicketControllers {
 
     private final ITicketService service;

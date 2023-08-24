@@ -127,7 +127,9 @@ public class InvoiceServicesImpl implements IInvoiceService {
 
         //save invoice and return
         invoiceItemRepository.saveAll(invoice.getInvoiceItem());
-        return mapper.toResponseDTO(repository.create(newInvoice));
+        Long response = repository.create(newInvoice).getId();
+
+        return (findOne(response));
     }
 
 }
