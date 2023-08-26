@@ -16,12 +16,14 @@ import com.flav.cinema_service_movie.movies.domain.mappers.IMovieMapper;
 import com.flav.cinema_service_movie.movies.domain.repository.IMovieRepository;
 import com.flav.cinema_service_movie.movies.domain.services.IInventoryClient;
 import com.flav.cinema_service_movie.movies.domain.services.IMovieServices;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Log4j2
 @Service
 public class MovieServicesImpl implements IMovieServices {
 
@@ -50,17 +52,25 @@ public class MovieServicesImpl implements IMovieServices {
                     movie.setTickets(stock);
                     return movie;
                 })
-                .map(mapper::toResponseDTO)
+                .map(item -> {
+                    log.info("Successful request in class | MovieServicesImpl | findAll");
+                    return mapper.toResponseDTO(item);
+                })
                 .toList();
     }
 
     @Override
     public MovieResponseDTO findOne(Long id) {
         //validates if the movie exists otherwise returns an excess
-        Movie movieDB = repository.findOne(id).orElseThrow(() -> new MovieNotFound(
-                String.format(MovieConstants.RESOURCE_WITH_ID_NOT_FOUND, id),
-                HttpStatus.NOT_FOUND
-        ));
+        Movie movieDB = repository.findOne(id).orElseThrow(() -> {
+            log.error(String.format("Request error in class | MovieServicesImpl | findOne | movie id %s not found",
+                    id));
+
+            return new MovieNotFound(
+                    String.format(MovieConstants.RESOURCE_WITH_ID_NOT_FOUND, id),
+                    HttpStatus.NOT_FOUND
+            );
+        });
 
         //makes a call to the inventory api to get the number of tickets
         TicketResponseDTO stock = inventoryClient.inStock(id);
@@ -68,6 +78,7 @@ public class MovieServicesImpl implements IMovieServices {
         //add the tickets to movie
         movieDB.setTickets(stock);
 
+        log.info("Successful request in class | MovieServicesImpl | findOne");
         return mapper.toResponseDTO(movieDB);
     }
 
@@ -83,7 +94,10 @@ public class MovieServicesImpl implements IMovieServices {
                     movie.setTickets(stock);
                     return movie;
                 })
-                .map(mapper::toResponseDTO)
+                .map(item -> {
+                    log.info("Successful request in class | MovieServicesImpl | findCategory");
+                    return mapper.toResponseDTO(item);
+                })
                 .toList();
     }
 
@@ -99,7 +113,10 @@ public class MovieServicesImpl implements IMovieServices {
                     movie.setTickets(stock);
                     return movie;
                 })
-                .map(mapper::toResponseDTO)
+                .map(item -> {
+                    log.info("Successful request in class | MovieServicesImpl | findAllById");
+                    return mapper.toResponseDTO(item);
+                })
                 .toList();
     };
 
@@ -108,14 +125,21 @@ public class MovieServicesImpl implements IMovieServices {
         Optional<Movie> movieDB = repository.findByTitle(movie.getTitle().toLowerCase());
 
         if (movieDB.isPresent()) {
+            log.error(String.format("Request error in class | MovieServicesImpl | create | movie with title %s exist",
+                    movie.getTitle()));
+
             throw new MovieResourceExists(String.format(MovieConstants.RESOURCE_WITH_NAME_EXISTS, movie.getTitle())
                     ,HttpStatus.BAD_REQUEST);
         }
 
-        //validates if the movie exists otherwise returns an excess
-        Category categoryDB = categoryRepository.findOne(movie.getCategory()).orElseThrow(() ->
-                new CategoryNotFound(String.format(CategoryConstants.RESOURCE_WITH_ID_NOT_FOUND, movie.getCategory()),
-                HttpStatus.NOT_FOUND));
+        //validates if the category exist otherwise returns an excess
+        Category categoryDB = categoryRepository.findOne(movie.getCategory()).orElseThrow(() -> {
+            log.error(String.format("Request error in class | MovieServicesImpl | create | movie category %s not found",
+                    movie.getCategory()));
+
+            return new CategoryNotFound(String.format(CategoryConstants.RESOURCE_WITH_ID_NOT_FOUND, movie.getCategory()),
+                HttpStatus.NOT_FOUND);
+        });
 
         Movie newMovie = Movie
                 .builder()
@@ -140,6 +164,8 @@ public class MovieServicesImpl implements IMovieServices {
         //add to inventory the movie created
         inventoryClient.addTicket(addInventory);
 
+        log.info("Successful request in class | MovieServicesImpl | create | add movie in inventory");
+        log.info("Successful request in class | MovieServicesImpl | create");
         return mapper.toResponseDTO(saveMovie);
     }
 }

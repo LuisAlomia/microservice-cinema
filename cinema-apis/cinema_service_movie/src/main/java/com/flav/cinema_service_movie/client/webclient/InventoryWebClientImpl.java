@@ -27,7 +27,7 @@ public class InventoryWebClientImpl implements IInventoryClient {
                         .bodyValue(ticket)
                         .retrieve()
                         .onStatus(HttpStatusCode::isError, clientResponse ->
-                                Mono.error(new ClientError("Client Internal server error",
+                                Mono.error(new ClientError("Client inventory api Internal server error",
                                         HttpStatus.INTERNAL_SERVER_ERROR)))
                         .bodyToMono(TicketResponseDTO.class)
                         .block();
@@ -40,7 +40,7 @@ public class InventoryWebClientImpl implements IInventoryClient {
                         .uri(String.format("lb://cinema-service-inventory/cinema/api/v1/inventory/%s", idMovie))
                         .retrieve()
                         .onStatus(HttpStatusCode::isError, clientResponse ->
-                                Mono.error(new ClientError("Client Internal server error",
+                                Mono.error(new ClientError("Client inventory api Internal server error",
                                         HttpStatus.INTERNAL_SERVER_ERROR)))
                         .bodyToMono(TicketResponseDTO.class)
                         .block();
