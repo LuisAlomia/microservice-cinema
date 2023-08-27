@@ -75,12 +75,10 @@ public class TicketServicesImpl implements ITicketService {
 
     @Override
     public List<TicketResponseDTO> showStock() {
+        log.info("Successful request in class | TicketServicesImpl | showStock");
         return repository.showStock()
                 .stream()
-                .map(item -> {
-                    log.info("Successful request in class | TicketServicesImpl | showStock");
-                    return mapper.toResponseDTO(item);
-                })
+                .map(mapper::toResponseDTO)
                 .toList();
     }
 

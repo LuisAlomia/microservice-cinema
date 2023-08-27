@@ -1,6 +1,7 @@
 package com.flav.cinema_service_invoice.invoice.presentation.controllers.advanc_exceptions_controller;
 
 import com.flav.cinema_service_invoice.invoice.domain.dtos.reponse.ErrorFieldsDTO;
+import com.flav.cinema_service_invoice.invoice.domain.exceptions.ClientError;
 import com.flav.cinema_service_invoice.invoice.domain.exceptions.InvoiceNotFound;
 import com.flav.cinema_service_invoice.invoice.domain.exceptions.NotMovieTicket;
 import jakarta.validation.ConstraintViolation;
@@ -20,6 +21,11 @@ public class HandlerExceptions {
 
     @ExceptionHandler(NotMovieTicket.class)
     public ResponseEntity<String> handleEmptyInput(NotMovieTicket emptyInputException){
+        return new ResponseEntity<>(emptyInputException.getMessage(), emptyInputException.getStatus());
+    }
+
+    @ExceptionHandler(ClientError.class)
+    public ResponseEntity<String> handleEmptyInput(ClientError emptyInputException){
         return new ResponseEntity<>(emptyInputException.getMessage(), emptyInputException.getStatus());
     }
 

@@ -114,7 +114,7 @@ public class InvoiceServicesImpl implements IInvoiceService {
                             //check if the number of ticket is 0
                             if(invoiceItem.getTickets().getNumberOfTickets() == 0) {
                                 log.error(String.format("Request error in class | InvoiceServicesImpl | create | movie id %s not ticket",
-                                        invoiceItem.getTickets().getNumberOfTickets()));
+                                        0));
 
                                 throw new NotMovieTicket(
                                         String.format(InvoiceConstants.NOT_MOVIE_TICKET, invoiceItem.getId()),
