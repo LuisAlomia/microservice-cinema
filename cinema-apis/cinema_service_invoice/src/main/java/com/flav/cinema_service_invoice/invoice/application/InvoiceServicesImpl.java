@@ -14,6 +14,7 @@ import com.flav.cinema_service_invoice.invoice.domain.mappers.IInvoiceMapper;
 import com.flav.cinema_service_invoice.invoice.domain.repository.IInvoiceRepository;
 import com.flav.cinema_service_invoice.invoice.domain.services.IInvoiceService;
 import com.flav.cinema_service_invoice.invoice.persistence.repository.IInvoiceItemRepositoryJpa;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Log4j2
 @Service
 public class InvoiceServicesImpl implements IInvoiceService {
 
@@ -63,14 +65,21 @@ public class InvoiceServicesImpl implements IInvoiceService {
 
         return list
                 .stream()
-                .map(mapper::toResponseDTO)
+                .map(item -> {
+                    log.info("Successful request in class | InvoiceServicesImpl | findAll");
+                    return mapper.toResponseDTO(item);
+                })
                 .toList();
     }
 
     @Override
     public InvoiceResponseDTO findOne(Long idInvoice) {
-        Invoice invoiceDB = repository.findOne(idInvoice).orElseThrow(() ->
-         new InvoiceNotFound(String.format(InvoiceConstants.INVOICE_NOT_FOUND, idInvoice), HttpStatus.NOT_FOUND));
+        Invoice invoiceDB = repository.findOne(idInvoice).orElseThrow(() -> {
+            log.error(String.format("Request error in class | InvoiceServicesImpl | findOne | invoice id %s not found",
+                    idInvoice));
+            return new InvoiceNotFound(String.format(InvoiceConstants.INVOICE_NOT_FOUND, idInvoice),
+                    HttpStatus.NOT_FOUND);
+        });
 
         invoiceDB.getInvoiceItem()
                 .stream()
@@ -85,6 +94,7 @@ public class InvoiceServicesImpl implements IInvoiceService {
                 })
                 .toList();
 
+        log.info("Successful request in class | InvoiceServicesImpl | findOne");
         return mapper.toResponseDTO(invoiceDB);
     }
 
@@ -103,6 +113,9 @@ public class InvoiceServicesImpl implements IInvoiceService {
                         .peek(invoiceItem -> {
                             //check if the number of ticket is 0
                             if(invoiceItem.getTickets().getNumberOfTickets() == 0) {
+                                log.error(String.format("Request error in class | InvoiceServicesImpl | create | movie id %s not ticket",
+                                        0));
+
                                 throw new NotMovieTicket(
                                         String.format(InvoiceConstants.NOT_MOVIE_TICKET, invoiceItem.getId()),
                                         HttpStatus.BAD_REQUEST);
@@ -129,6 +142,8 @@ public class InvoiceServicesImpl implements IInvoiceService {
         invoiceItemRepository.saveAll(invoice.getInvoiceItem());
         Long response = repository.create(newInvoice).getId();
 
+        log.info("Successful request in class | InvoiceServicesImpl | create | decrease 1 ticket movie in inventory");
+        log.info("Successful request in class | InvoiceServicesImpl | create");
         return (findOne(response));
     }
 
