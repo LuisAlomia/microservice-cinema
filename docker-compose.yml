@@ -1,0 +1,112 @@
+version: "3.9"
+
+services:
+  #cinema microservice container
+  config-server:
+    container_name: config-server
+    image: cinema_config_server:1.0.0
+    build: ./config_service/
+    ports:
+      - 9999:9999
+    networks:
+      - cinema
+
+  discovery-service:
+    container_name: discovery-service
+    image: cinema_discovery_server:1.0.0
+    build: ./discovery_service/
+    ports:
+      - 8761:8761
+    environment:
+      - DOCKER_HOST=discovery-service
+    networks:
+      - cinema
+
+  gateway-service:
+    container_name: gateway-service
+    image: cinema_gateway_service:1.0.0
+    build: ./gateway-service/
+    ports:
+      - 10000:10000
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka
+    links:
+      - discovery-service
+    depends_on:
+      - discovery-service
+    networks:
+      - cinema
+
+  monitoring-service:
+    container_name: monitoring-service
+    image: cinema_monitoring_service:1.0.0
+    build: ./monitoring-service/
+    ports:
+      - 10001:10001
+    networks:
+      - cinema
+
+  inventory-service:
+    container_name: inventory-service
+    image: cinema_inventory_service:1.0.0
+    build: ./cinema-apis/cinema_service_inventory/
+    environment:
+      - spring.cloud.config.uri=http://config-server:9999
+      - DOCKER_HOST_EUREKA=discovery-service
+      - DOCKER_HOST_MONITORING=monitoring-service
+      - eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka
+      - spring.boot.admin.client.url=http://localhost:10001
+    links:
+      - discovery-service
+    depends_on:
+      - config-server
+      - discovery-service
+      - gateway-service
+      - monitoring-service
+    networks:
+      - cinema
+
+  invoice-service:
+    container_name: invoice-service
+    image: cinema_invoice_service:1.0.0
+    build: ./cinema-apis/cinema_service_invoice/
+    environment:
+      - spring.cloud.config.uri=http://config-server:9999
+      - DOCKER_HOST_EUREKA=discovery-service
+      - DOCKER_HOST_MONITORING=monitoring-service
+      - eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka
+      - spring.boot.admin.client.url=http://localhost:10001
+    links:
+      - discovery-service
+    depends_on:
+      - config-server
+      - discovery-service
+      - gateway-service
+      - monitoring-service
+    networks:
+      - cinema
+
+  movie-service:
+    container_name: movie-service
+    image: cinema_movie_service:1.0.0
+    build: ./cinema-apis/cinema_service_movie/
+    environment:
+      - spring.cloud.config.uri=http://config-server:9999
+      - DOCKER_HOST_EUREKA=discovery-service
+      - DOCKER_HOST_MONITORING=monitoring-service
+      - eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka
+      - spring.boot.admin.client.url=http://localhost:10001
+    links:
+      - discovery-service
+    depends_on:
+      - config-server
+      - discovery-service
+      - gateway-service
+      - monitoring-service
+    networks:
+      - cinema
+
+
+networks:
+  cinema:
+    driver: bridge
