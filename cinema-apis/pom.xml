@@ -22,11 +22,9 @@
 	</properties>
 
 	<modules>
-		<module>cinema_service_movie</module>
-		<module>cinema_service_client</module>
 		<module>cinema_service_inventory</module>
+		<module>cinema_service_movie</module>
 		<module>cinema_service_invoice</module>
-		<module>cinema_service_shopping_cart</module>
 	</modules>
 
 	<dependencies>
